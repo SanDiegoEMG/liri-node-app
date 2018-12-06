@@ -14,21 +14,30 @@ fs.readFile("./keys.js", "utf8", function (error, data) {
   }
 });
 
+// var movieTitle = process.argv.slice(3).join(" ");
+
+
 var command = process.argv[2]
 
-
 if (command === "movie-this") {
-
-  var movieTitle = process.argv.slice(3).join(" ");
-  var movieQueryUrl = "http://www.omdbapi.com/?t=" + movieTitle + "&y=&plot=short&apikey=trilogy";
-
-  axios.get(movieQueryUrl).then(
-    function (response) {
-
-      console.log("Movie Title: " + response.data.Title);
-      console.log("Release Year: " + response.data.Year);
+  inquirer.prompt([
+    {
+      type: "input",
+      name: "movieInput",
+      message: "What movie you would like to know more about?"
     }
-  );
+  ]).then(function (info) {
+    var movieChoice = info.movieInput.replace(' ', '%20')
+    console.log(movieChoice)
+
+    var movieQueryUrl = "http://www.omdbapi.com/?t=" + movieChoice + "&y=&plot=short&apikey=trilogy";
+    axios.get(movieQueryUrl).then(
+      function (response) {
+        console.log("Movie Title: " + response.data.Title);
+        console.log("Release Year: " + response.data.Year);
+      }
+    );
+  })
 }
 
 
