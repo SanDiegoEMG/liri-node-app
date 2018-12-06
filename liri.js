@@ -46,5 +46,45 @@ if (command === "movie-this") {
   })
 }
 
+else if (command === "concert-this") {
+  inquirer.prompt([
+    {
+      type: "confirm",
+      name: "concertYN",
+      message: "Would you like to see a concert?"
+    }
+  ]).then(function (input) {
+    if (input.concertYN === true) {
+      inquirer.prompt([
+        {
+          type: "input",
+          name: "concertInput",
+          message: "What artist or band would you like to see?"
+        }
+      ]).then(function (response) {
+        var concertChoice = response.concertInput.replace(' ', '%20');
+        console.log(concertChoice)
+        var concertUrl = "https://rest.bandsintown.com/artists/" + concertChoice + "/events?app_id=codingbootcamp"
+
+        axios.get(concertUrl).then(
+          function (response) {
+            console.log(response.data);
+            var responseArr = response.data;
+            console.log(responseArr.length);
+            // for i=0, i< responseArr.lenth
+          }
+        )
+      })
+      // var concertUrl = "https://rest.bandsintown.com/artists/" + concertChoice + "/events?app_id=codingbootcamp"
+    }
+    else {
+      console.log("If you don't want to see a concert, this conversation is finished.")
+    };
+  })
+}
+
+
+
+
 
 
