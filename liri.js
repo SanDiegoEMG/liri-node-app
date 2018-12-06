@@ -35,6 +35,12 @@ if (command === "movie-this") {
       function (response) {
         console.log("Movie Title: " + response.data.Title);
         console.log("Release Year: " + response.data.Year);
+        console.log("Rotten Tomatoes says: " + response.data.Ratings[1].Value);
+        console.log("IMDB says: " + response.data.Ratings[0].Value);
+        console.log("Main Actors: " + response.data.Actors);
+        console.log("Movie Plot: " + response.data.Plot);
+        console.log("Country of Origin: " + response.data.Language);
+        console.log("Movie language: " + response.data.Language);
       }
     );
   })
