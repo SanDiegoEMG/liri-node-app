@@ -62,20 +62,31 @@ else if (command === "concert-this") {
           message: "What artist or band would you like to see?"
         }
       ]).then(function (response) {
-        var concertChoice = response.concertInput.replace(' ', '%20');
+        var concertChoice = response.concertInput;
         console.log(concertChoice)
         var concertUrl = "https://rest.bandsintown.com/artists/" + concertChoice + "/events?app_id=codingbootcamp"
 
         axios.get(concertUrl).then(
           function (response) {
-            console.log(response.data);
             var responseArr = response.data;
-            console.log(responseArr.length);
-            // for i=0, i< responseArr.lenth
+            if (responseArr.length >= 1) {
+              console.log("Your selection " + concertChoice + " has " + responseArr.length + " shows coming up. \n Scroll down to learn about your options.");
+              for (var i = 0; i < responseArr.length; i++) {
+                console.log(response.data[i].venue.name + " in " + response.data[i].venue.city)
+                var sepTime = (response.data[i].datetime).slice(11);
+                var sepDate = (response.data[i].datetime).slice(0, 9);
+                console.log(sepTime);
+                console.log(sepDate);
+                // var momentTime = moment(response.data[i].datetime, YYYY-MM-DD).format(MM/DD/YYYY)
+                console.log("date Time = " +response.data[i].datetime);
+              }
+            } else {
+              console.log("Sorry, currently " + concertChoice + " has no upcoming shows.")
+            }
+
           }
         )
       })
-      // var concertUrl = "https://rest.bandsintown.com/artists/" + concertChoice + "/events?app_id=codingbootcamp"
     }
     else {
       console.log("If you don't want to see a concert, this conversation is finished.")
