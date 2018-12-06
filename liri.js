@@ -1,6 +1,6 @@
 require("dotenv").config();
 var inquirer = require("inquirer");
-var spotify = require('node-spotify-api');
+var Spotify = require('node-spotify-api');
 var moment = require('moment');
 var axios = require('axios');
 
@@ -8,11 +8,14 @@ var axios = require('axios');
 // import the keys.js file and store it in a variable.
 var fs = require("fs");
 
-fs.readFile("./keys.js", "utf8", function (error, data) {
-  if (error) {
-    return console.log(error);   // If the code experiences any errors it will log the error to the console.
-  }
-});
+// fs.readFile("./keys.js", "utf8", function (error, data) {
+//   if (error) {
+//     return console.log(error);   // If the code experiences any errors it will log the error to the console.
+//   }
+//   else {
+//     console.log(data);
+//   }
+// });
 
 
 
@@ -28,9 +31,8 @@ if (command === "movie-this") {
     }
   ]).then(function (info) {
     var movieChoice = info.movieInput
-    // console.log(movieChoice)
-
     var movieQueryUrl = "http://www.omdbapi.com/?t=" + movieChoice + "&y=&plot=short&apikey=trilogy";
+
     axios.get(movieQueryUrl).then(
       function (response) {
         console.log("\nMovie Title: " + response.data.Title);
@@ -50,7 +52,6 @@ if (command === "movie-this") {
           console.log("Country of Origin: " + response.data.Country);
           console.log("Movie language: " + response.data.Language + "\n");
         }
-        // console.log(response.data)
       }
     );
   })
@@ -110,6 +111,37 @@ else if (command === "concert-this") {
 
 
 
+
+if (command === "spotify-this-song") {
+  inquirer.prompt([
+    {
+      type: "input",
+      name: "spotifyInput",
+      message: "What song are you curious about?"
+    }
+  ]).then(function (info) {
+
+    var spotifyChoice = info.spotifyInput;
+
+    var spotify = new Spotify({
+      id: "28736ad86ddf4fbaa38b131c137ddcd0",
+      secret: "77183f78d25d496c8d45b94e68956608"
+    });
+
+    spotify.search({ type: 'track', query: 'happy', limit: "5" })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
+  })
+};
+
+
+
+// var getSpot = require("./keys.js");
+// console.log (getSpot.id)
 
 
 
