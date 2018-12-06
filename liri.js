@@ -14,11 +14,11 @@ fs.readFile("./keys.js", "utf8", function (error, data) {
   }
 });
 
-// var movieTitle = process.argv.slice(3).join(" ");
 
 
 var command = process.argv[2]
 
+// movie call
 if (command === "movie-this") {
   inquirer.prompt([
     {
@@ -27,25 +27,35 @@ if (command === "movie-this") {
       message: "What movie you would like to know more about?"
     }
   ]).then(function (info) {
-    var movieChoice = info.movieInput.replace(' ', '%20')
-    console.log(movieChoice)
+    var movieChoice = info.movieInput
+    // console.log(movieChoice)
 
     var movieQueryUrl = "http://www.omdbapi.com/?t=" + movieChoice + "&y=&plot=short&apikey=trilogy";
     axios.get(movieQueryUrl).then(
       function (response) {
-        console.log("Movie Title: " + response.data.Title);
+        console.log("\nMovie Title: " + response.data.Title);
         console.log("Release Year: " + response.data.Year);
-        console.log("Rotten Tomatoes says: " + response.data.Ratings[1].Value);
-        console.log("IMDB says: " + response.data.Ratings[0].Value);
-        console.log("Main Actors: " + response.data.Actors);
-        console.log("Movie Plot: " + response.data.Plot);
-        console.log("Country of Origin: " + response.data.Language);
-        console.log("Movie language: " + response.data.Language);
+        var ratings = (response.data.Ratings).length;
+        if (ratings > 2 == true) {
+          console.log("Rotten Tomatoes rating: " + response.data.Ratings[1].Value);
+          console.log("IMDB rating: " + response.data.Ratings[0].Value);
+          console.log("Main Actors: " + response.data.Actors);
+          console.log("Movie Plot: " + response.data.Plot);
+          console.log("Country of Origin: " + response.data.Language);
+          console.log("Movie language: " + response.data.Language + "\n");
+        } else {
+          console.log("IMDB rating: " + response.data.Ratings[0].Value);
+          console.log("Main Actors: " + response.data.Actors);
+          console.log("Movie Plot: " + response.data.Plot);
+          console.log("Country of Origin: " + response.data.Country);
+          console.log("Movie language: " + response.data.Language + "\n");
+        }
+        // console.log(response.data)
       }
     );
   })
 }
-
+// concert call
 else if (command === "concert-this") {
   inquirer.prompt([
     {
@@ -72,22 +82,22 @@ else if (command === "concert-this") {
             if (responseArr.length >= 1) {
               console.log("\n Your selection " + concertChoice + " has " + responseArr.length + " shows coming up. \n Scroll down to learn about your options." + "\n");
               for (var i = 0; i < responseArr.length; i++) {
-                console.log("Where: " + response.data[i].venue.name + " in " + response.data[i].venue.city)
-                var useIndex = (response.data[i].datetime).indexOf("T");
-                var sepTime = (response.data[i].datetime).slice(useIndex+1);
-                var sepDate = (response.data[i].datetime).slice(0, useIndex);
 
-                // console.log(sepTime);
-                // console.log(sepDate);
+                // process for isolating date and time info  information
+                var useIndex = (response.data[i].datetime).indexOf("T");
+                var sepTime = (response.data[i].datetime).slice(useIndex + 1);
+                var sepDate = (response.data[i].datetime).slice(0, useIndex);
+                // using moment for formatinng 
                 var momentDate = moment(sepDate, "YYYY-MM-DD").format("MM/DD/YYYY")
                 var momentTime = moment(sepTime, "HH:mm:ss").format("hh:mm a")
+
+                // formatted output
+                console.log("Where: " + response.data[i].venue.name + " in " + response.data[i].venue.city)
                 console.log("On " + momentDate + " at " + momentTime + "\n");
-                // console.log(response.data[i].datetime);
               }
             } else {
               console.log("Sorry, currently " + concertChoice + " has no upcoming shows.")
             }
-
           }
         )
       })
