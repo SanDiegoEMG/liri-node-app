@@ -3,21 +3,24 @@ var inquirer = require("inquirer");
 var Spotify = require('node-spotify-api');
 var moment = require('moment');
 var axios = require('axios');
+
+
+// import the keys.js file and store it in a variable.
 var fs = require("fs");
-var spotID = require("./keys.js")
 
+// fs.readFile("./keys.js", "utf8", function (error, data) {
+//   if (error) {
+//     return console.log(error);   // If the code experiences any errors it will log the error to the console.
+//   }
+//   else {
+//     console.log(data);
+//   }
+// });
 
-fs.readFile("./keys.js", "utf8", function (error, data) {
-  if (error) {
-    return console.log(error);   // If the code experiences any errors it will log the error to the console.
-  }
-  else {
-    console.log(data);
-  }
-});
 
 
 var command = process.argv[2]
+
 // movie call
 if (command === "movie-this") {
   inquirer.prompt([
@@ -106,10 +109,8 @@ else if (command === "concert-this") {
   })
 }
 
-var spotify = new Spotify({
-  id: spotID.spotify.id,
-  secret: spotID.spotify.secret,
-});
+
+
 
 if (command === "spotify-this-song") {
   inquirer.prompt([
@@ -121,17 +122,23 @@ if (command === "spotify-this-song") {
   ]).then(function (info) {
 
     var spotifyChoice = info.spotifyInput;
-    console.log(spotifyChoice);
-     
-    spotify.search({ type: 'track', query: 'All the Small Things' }, function(err, data) {
-      if (err) {
-        return console.log('Error occurred: ' + err);
-      }
-    console.log(data); 
+
+    var spotify = new Spotify({
+      id: "28736ad86ddf4fbaa38b131c137ddcd0",
+      secret: "77183f78d25d496c8d45b94e68956608"
     });
+
+    spotify.search({ type: 'track', query: spotifyChoice, limit: "5" })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
   })
 };
 
 
 
-
+// var getSpot = require("./keys.js");
+// console.log (getSpot.id)
