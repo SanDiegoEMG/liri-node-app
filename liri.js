@@ -63,22 +63,26 @@ else if (command === "concert-this") {
         }
       ]).then(function (response) {
         var concertChoice = response.concertInput;
-        console.log(concertChoice)
+        // console.log(concertChoice)
         var concertUrl = "https://rest.bandsintown.com/artists/" + concertChoice + "/events?app_id=codingbootcamp"
 
         axios.get(concertUrl).then(
           function (response) {
             var responseArr = response.data;
             if (responseArr.length >= 1) {
-              console.log("Your selection " + concertChoice + " has " + responseArr.length + " shows coming up. \n Scroll down to learn about your options.");
+              console.log("\n Your selection " + concertChoice + " has " + responseArr.length + " shows coming up. \n Scroll down to learn about your options." + "\n");
               for (var i = 0; i < responseArr.length; i++) {
-                console.log(response.data[i].venue.name + " in " + response.data[i].venue.city)
-                var sepTime = (response.data[i].datetime).slice(11);
-                var sepDate = (response.data[i].datetime).slice(0, 9);
-                console.log(sepTime);
-                console.log(sepDate);
-                // var momentTime = moment(response.data[i].datetime, YYYY-MM-DD).format(MM/DD/YYYY)
-                console.log("date Time = " +response.data[i].datetime);
+                console.log("Where: " + response.data[i].venue.name + " in " + response.data[i].venue.city)
+                var useIndex = (response.data[i].datetime).indexOf("T");
+                var sepTime = (response.data[i].datetime).slice(useIndex+1);
+                var sepDate = (response.data[i].datetime).slice(0, useIndex);
+
+                // console.log(sepTime);
+                // console.log(sepDate);
+                var momentDate = moment(sepDate, "YYYY-MM-DD").format("MM/DD/YYYY")
+                var momentTime = moment(sepTime, "HH:mm:ss").format("hh:mm a")
+                console.log("On " + momentDate + " at " + momentTime + "\n");
+                // console.log(response.data[i].datetime);
               }
             } else {
               console.log("Sorry, currently " + concertChoice + " has no upcoming shows.")
